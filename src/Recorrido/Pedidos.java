@@ -4,14 +4,20 @@
  */
 package Recorrido;
 
+import static Recorrido.Historial.registros;
 import static Recorrido.RegistroProducto.contadorPro;
 import static Recorrido.RegistroProducto.productos;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -31,19 +37,37 @@ public class Pedidos extends javax.swing.JFrame {
     public static int velocidad3;
     public static String vehiculo;
     
+    public static int contadorInicio=0;
+    public static String pR;
+    
     public static String fecha1;
     public static String fecha2;
     public static String fecha3;
+    public static String motocicleta1;
+    public static String motocicleta2;
+    public static String motocicleta3;
+    public static double total1;
+    public static double total2;
+    public static double total3;
+    public static String pR1;
+    public static String pR2;
+    public static String pR3;
     
-    public static String[] pres=new String[100];
-    public static String[] prod=new String[100];
+    public static String[] pres=new String[10];
+    public static String[] prod=new String[10];
+    //public static  recuperados;
+        
     /**
      * Creates new form Pedidos
      */
     public Pedidos() {
         initComponents();
-        Regresar3.setBackground(Color.darkGray);
-        Regresar4.setBackground(Color.GREEN);
+        
+        abriendoDocumento();
+        contadorInicio++;
+        jLabel7.setText("Q. "+String.valueOf(total));
+        AgregarProductoSeleccionado.setBackground(Color.darkGray);
+        ConfirmarPedido.setBackground(Color.GREEN);
         RegistroProducto re=new RegistroProducto();
         re.actualizar();
         actualizarTablaProductos();
@@ -85,13 +109,13 @@ public class Pedidos extends javax.swing.JFrame {
         TableProducto = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        Regresar3 = new javax.swing.JButton();
+        AgregarProductoSeleccionado = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        Regresar4 = new javax.swing.JButton();
+        ConfirmarPedido = new javax.swing.JButton();
         jComboBox2 = new javax.swing.JComboBox<>();
         Regresar5 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -99,6 +123,11 @@ public class Pedidos extends javax.swing.JFrame {
         Regresar7 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         TablePedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -106,7 +135,7 @@ public class Pedidos extends javax.swing.JFrame {
                 {null, null}
             },
             new String [] {
-                "Producto", "Precio"
+                "Producto", "Precio (Q.)"
             }
         ));
         jScrollPane1.setViewportView(TablePedido);
@@ -119,7 +148,7 @@ public class Pedidos extends javax.swing.JFrame {
                 {null, null}
             },
             new String [] {
-                "Producto", "Precio"
+                "Producto", "Precio (Q.)"
             }
         ));
         jScrollPane2.setViewportView(TableProducto);
@@ -132,12 +161,12 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Pedidos:");
 
-        Regresar3.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        Regresar3.setForeground(new java.awt.Color(255, 255, 255));
-        Regresar3.setText("Agregar Producto Seleccionado al Pedido");
-        Regresar3.addActionListener(new java.awt.event.ActionListener() {
+        AgregarProductoSeleccionado.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        AgregarProductoSeleccionado.setForeground(new java.awt.Color(255, 255, 255));
+        AgregarProductoSeleccionado.setText("Agregar Producto Seleccionado al Pedido");
+        AgregarProductoSeleccionado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Regresar3ActionPerformed(evt);
+                AgregarProductoSeleccionadoActionPerformed(evt);
             }
         });
 
@@ -158,11 +187,11 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
 
-        Regresar4.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        Regresar4.setText("CONFIRMAR PEDIDO");
-        Regresar4.addActionListener(new java.awt.event.ActionListener() {
+        ConfirmarPedido.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        ConfirmarPedido.setText("CONFIRMAR PEDIDO");
+        ConfirmarPedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Regresar4ActionPerformed(evt);
+                ConfirmarPedidoActionPerformed(evt);
             }
         });
 
@@ -217,9 +246,9 @@ public class Pedidos extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 6, Short.MAX_VALUE)
                         .addComponent(Regresar5, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(317, 317, 317)
+                        .addGap(311, 311, 311)
                         .addComponent(Regresar7, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,10 +256,10 @@ public class Pedidos extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(Regresar3, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(AgregarProductoSeleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Regresar4, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ConfirmarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Regresar6, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(23, 23, 23))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -260,8 +289,8 @@ public class Pedidos extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Regresar3)
-                    .addComponent(Regresar4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(AgregarProductoSeleccionado)
+                    .addComponent(ConfirmarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -281,7 +310,7 @@ public class Pedidos extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(72, 72, 72)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(276, Short.MAX_VALUE)))
+                    .addContainerGap(277, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -299,7 +328,7 @@ public class Pedidos extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Regresar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar3ActionPerformed
+    private void AgregarProductoSeleccionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarProductoSeleccionadoActionPerformed
         // TODO add your handling code here:
         total=0;
         filaP=TableProducto.getSelectedRow();
@@ -308,8 +337,8 @@ public class Pedidos extends javax.swing.JFrame {
         DefaultTableModel modeloListado = (DefaultTableModel) TablePedido.getModel();
         modeloListado.setRowCount(pedidosFila+1);
         
-        pres[pedidosFila] = TableProducto.getModel().getValueAt(filaP, 0).toString();
-        prod[pedidosFila] = TableProducto.getModel().getValueAt(filaP, 1).toString();
+        pres[pedidosFila] = TableProducto.getModel().getValueAt(filaP, 1).toString();
+        prod[pedidosFila] = TableProducto.getModel().getValueAt(filaP, 0).toString();
         
         for (int i = 0; i < pedidosFila+1; i++) {
             modeloListado.setValueAt(prod[i], i, 0);
@@ -320,28 +349,56 @@ public class Pedidos extends javax.swing.JFrame {
         jLabel7.setText("Q. "+String.valueOf(total));
         pedidosFila++;
        
-    }//GEN-LAST:event_Regresar3ActionPerformed
+    }//GEN-LAST:event_AgregarProductoSeleccionadoActionPerformed
 
-    private void Regresar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar4ActionPerformed
+    private void ConfirmarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmarPedidoActionPerformed
         // TODO add your handling code here:
+        pR="";
+        for(int i=0;i<pedidosFila;i++){
+            if(i==0){
+                pR=prod[i];
+            }else{
+                pR+="; "+prod[i];
+            }
+        }
         vehiculo=jComboBox1.getSelectedItem().toString();
         
         if(vehiculo.equals("Motocicleta1")){
             velocidad1=Integer.parseInt(jComboBox2.getSelectedItem().toString());
             fecha1=LocalDate.now().toString()+" - "+LocalTime.now().toString();
+            motocicleta1="Motocicleta1";
+            total1=total;
+            pR1=pR;
+            
         }else if(vehiculo.equals("Motocicleta2")){
-            velocidad2=Integer.parseInt(jComboBox2.getSelectedItem().toString());
-            fecha2=LocalDate.now().toString()+" - "+LocalTime.now().toString();
+           velocidad2=Integer.parseInt(jComboBox2.getSelectedItem().toString());
+           fecha2=LocalDate.now().toString()+" - "+LocalTime.now().toString();
+           motocicleta2="Motocicleta2";
+           total2=total;
+           pR2=pR;
         }else if(vehiculo.equals("Motocicleta3")){
             velocidad3=Integer.parseInt(jComboBox2.getSelectedItem().toString());
             fecha3=LocalDate.now().toString()+" - "+LocalTime.now().toString();
+            motocicleta3="Motocicleta3";
+            total3=total;
+            pR3=pR;
         }
        JOptionPane.showMessageDialog(rootPane,"PRODUCTO ENVIADO");
        
-    }//GEN-LAST:event_Regresar4ActionPerformed
+       reiniciarTablaTotal();
+    }//GEN-LAST:event_ConfirmarPedidoActionPerformed
 
+    public void reiniciarTablaTotal(){
+       pedidosFila=0;
+       total=0;
+       jLabel7.setText("Q. "+String.valueOf(total));
+       DefaultTableModel modeloListado = (DefaultTableModel) TablePedido.getModel();
+       modeloListado.setRowCount(0);
+    }
+    
     private void Regresar5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar5ActionPerformed
         // TODO add your handling code here:
+        actualizarTotal();
         
         RegistroProducto objet=new  RegistroProducto();
         objet.show(true);
@@ -358,9 +415,48 @@ public class Pedidos extends javax.swing.JFrame {
     private void Regresar7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar7ActionPerformed
         // TODO add your handling code here:
         Historial obj=new Historial();
+        
         obj.show(true);
         this.show(false);
+        obj.mostrarHistorial();
     }//GEN-LAST:event_Regresar7ActionPerformed
+
+    public void abriendoDocumento(){
+        if(contadorInicio==0){
+           // deserializar
+            try {
+                //cremos el respaldo
+                ArrayList<Registros> recupe=new ArrayList<Registros>();
+
+                // mostrar registros cargados
+                ObjectInputStream recuperar_fichero=new ObjectInputStream(new FileInputStream("./dist/Respaldo.txt"));
+                recupe = (ArrayList) recuperar_fichero.readObject();
+                recuperar_fichero.close();
+
+                //lo clonamos y casteamos
+                registros = (ArrayList<Registros>) recupe.clone();
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }    
+    }
+    
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        
+        try {
+            FileOutputStream archivo = new FileOutputStream("./dist/Respaldo.txt");
+            ObjectOutputStream salida = new ObjectOutputStream(archivo);
+            salida.writeObject(registros);
+            salida.close();
+            archivo.close();
+            JOptionPane.showMessageDialog(rootPane,"Se ha respaldo su programa en: /dist/Respaldo.txt");
+           
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }   
+    }//GEN-LAST:event_formWindowClosing
 
 
     
@@ -369,8 +465,8 @@ public class Pedidos extends javax.swing.JFrame {
         modeloListado.setRowCount(contadorPro);
         
         for (int i = 0; i < contadorPro; i++) {
-        modeloListado.setValueAt(productos[i].precio, i, 0);
-        modeloListado.setValueAt(productos[i].productos, i, 1);
+        modeloListado.setValueAt(productos[i].precio, i, 1);
+        modeloListado.setValueAt(productos[i].productos, i, 0);
         
         }
        
@@ -425,8 +521,8 @@ public class Pedidos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Regresar3;
-    private javax.swing.JButton Regresar4;
+    private javax.swing.JButton AgregarProductoSeleccionado;
+    private javax.swing.JButton ConfirmarPedido;
     private javax.swing.JButton Regresar5;
     private javax.swing.JButton Regresar6;
     private javax.swing.JButton Regresar7;

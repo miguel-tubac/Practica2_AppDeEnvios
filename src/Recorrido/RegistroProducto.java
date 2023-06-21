@@ -230,7 +230,7 @@ public class RegistroProducto extends javax.swing.JFrame {
         actualizar();
         Pedidos objet=new Pedidos();
         
-        objet.actualizarTotal();
+        objet.reiniciarTablaTotal();
         objet.show(true);
         this.show(false);
     }//GEN-LAST:event_Regresar4ActionPerformed

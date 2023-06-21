@@ -81,9 +81,19 @@ public class VerRecorridos extends javax.swing.JFrame {
 
         Motocicleta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/repartidor.png"))); // NOI18N
         Motocicleta1.setText("1");
+        Motocicleta1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Motocicleta1MouseClicked(evt);
+            }
+        });
 
         Motocicleta2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/repartidor.png"))); // NOI18N
         Motocicleta2.setText("2");
+        Motocicleta2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Motocicleta2MouseClicked(evt);
+            }
+        });
 
         jButton1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jButton1.setText("ENVIAR TODOS");
@@ -98,6 +108,11 @@ public class VerRecorridos extends javax.swing.JFrame {
 
         Motocicleta3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/repartidor.png"))); // NOI18N
         Motocicleta3.setText("3");
+        Motocicleta3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Motocicleta3MouseClicked(evt);
+            }
+        });
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Motocicleta1");
@@ -134,7 +149,7 @@ public class VerRecorridos extends javax.swing.JFrame {
         });
 
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("Motocicleta1");
+        jLabel7.setText("Motocicleta3");
 
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Distancia: ");
@@ -275,36 +290,58 @@ public class VerRecorridos extends javax.swing.JFrame {
         Recorrido rec2 = new Recorrido(Motocicleta2, velocidad2);
         Recorrido rec3 = new Recorrido(Motocicleta3, velocidad3);
         
+        rec1.start();
         rec2.start();
         rec3.start();
-        rec1.start();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         Recorrido rec1 = new Recorrido(Motocicleta1, velocidad1); 
-        rec1.start();
+        rec1.start();     
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         Recorrido rec2 = new Recorrido(Motocicleta2, velocidad2);
         rec2.start();
+       
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         Recorrido rec3 = new Recorrido(Motocicleta3, velocidad3);
         rec3.start();
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void Regresar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar4ActionPerformed
         // TODO add your handling code here:
         Pedidos objet=new Pedidos();
-        objet.actualizarTotal();
+        objet.reiniciarTablaTotal();
         objet.show(true);
         this.show(false);
     }//GEN-LAST:event_Regresar4ActionPerformed
+
+    private void Motocicleta1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Motocicleta1MouseClicked
+        // TODO add your handling code here:
+        Recorrido rec1 = new Recorrido(Motocicleta1, velocidad1); 
+        rec1.start();
+    }//GEN-LAST:event_Motocicleta1MouseClicked
+
+    private void Motocicleta2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Motocicleta2MouseClicked
+        // TODO add your handling code here:
+        Recorrido rec2 = new Recorrido(Motocicleta2, velocidad2);
+        rec2.start();
+    }//GEN-LAST:event_Motocicleta2MouseClicked
+
+    private void Motocicleta3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Motocicleta3MouseClicked
+        // TODO add your handling code here:
+        Recorrido rec3 = new Recorrido(Motocicleta3, velocidad3);
+        rec3.start();
+    }//GEN-LAST:event_Motocicleta3MouseClicked
 
     /**
      * @param args the command line arguments

@@ -4,25 +4,75 @@
  */
 package Recorrido;
 
+import java.io.Serializable;
+
 /**
  *
  * @author DELL
  */
-public class Registros {
+public class Registros implements Serializable {
     public String vehiculo;
-    public String distancia;
-    public String monto;
-    public String[] productos;
+    public int distancia;
+    public double monto;
     public String creacion;
     public String entrega;
+    public String productos;
 
-    public Registros(String vehiculo, String distancia, String monto, String[] productos, String creacion, String entrega) {
+    public void setVehiculo(String vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    public void setDistancia(int distancia) {
+        this.distancia = distancia;
+    }
+
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    public void setCreacion(String creacion) {
+        this.creacion = creacion;
+    }
+
+    public void setEntrega(String entrega) {
+        this.entrega = entrega;
+    }
+
+    public void setProductos(String productos) {
+        this.productos = productos;
+    }
+
+    public String getVehiculo() {
+        return vehiculo;
+    }
+
+    public int getDistancia() {
+        return distancia;
+    }
+
+    public double getMonto() {
+        return monto;
+    }
+
+    public String getCreacion() {
+        return creacion;
+    }
+
+    public String getEntrega() {
+        return entrega;
+    }
+
+    public String getProductos() {
+        return productos;
+    }
+
+    public Registros(String vehiculo, int distancia, double monto, String creacion, String entrega,String productos) {
         this.vehiculo = vehiculo;
         this.distancia = distancia;
         this.monto = monto;
-        this.productos = productos;
         this.creacion = creacion;
         this.entrega = entrega;
+        this.productos = productos;
     }
     
      

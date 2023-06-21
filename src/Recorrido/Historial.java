@@ -4,15 +4,17 @@
  */
 package Recorrido;
 
-import static Recorrido.Pedidos.fecha1;
-import static Recorrido.Pedidos.total;
-import static Recorrido.Pedidos.vehiculo;
-import static Recorrido.Pedidos.velocidad1;
-import static Recorrido.Recorrido.fechaFinal1;
+import static Recorrido.Recorrido.creaR;
+import static Recorrido.Recorrido.disR;
+import static Recorrido.Recorrido.entregaR;
+import static Recorrido.Recorrido.finalProR;
+import static Recorrido.Recorrido.totalR;
+import static Recorrido.Recorrido.veiR;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;//uygug
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,13 +23,17 @@ import javax.swing.table.DefaultTableModel;
  * @author DELL
  */
 public class Historial extends javax.swing.JFrame {
-
+   // public static Registros[] registros=new Registros[3];
+    public static ArrayList<Registros> registros = new ArrayList<Registros>();
+    
+    
     /**
      * Creates new form Historial
      */
     public Historial() {
+        //guardarInformacion();
         initComponents();
-        mostrarHistorial();
+        //mostrarHistorial();
     }
              //clase de degradado
   class jPanelGradient extends JPanel{
@@ -62,6 +68,7 @@ public class Historial extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         HistorialTable = new javax.swing.JTable();
         Regresar4 = new javax.swing.JButton();
+        RecetearTabla = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,7 +81,7 @@ public class Historial extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Vehiculo", "Distancia", "Monto", "Fecha y hora creacion", "Fecha y hora entrega"
+                "Vehiculo", "Distancia (km)", "Monto (Q.)", "Fecha y hora creacion", "Fecha y hora entrega", "Productos"
             }
         ));
         jScrollPane1.setViewportView(HistorialTable);
@@ -87,22 +94,32 @@ public class Historial extends javax.swing.JFrame {
             }
         });
 
+        RecetearTabla.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        RecetearTabla.setText("Reiniciar Tabla");
+        RecetearTabla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecetearTablaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(RecetearTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Regresar4, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(325, 325, 325)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
-                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,7 +129,9 @@ public class Historial extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
-                .addComponent(Regresar4)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Regresar4)
+                    .addComponent(RecetearTabla))
                 .addGap(15, 15, 15))
         );
 
@@ -134,27 +153,40 @@ public class Historial extends javax.swing.JFrame {
     private void Regresar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Regresar4ActionPerformed
         // TODO add your handling code here:
         Pedidos objet=new Pedidos();
-        objet.actualizarTotal();
+        
         objet.show(true);
         this.show(false);
     }//GEN-LAST:event_Regresar4ActionPerformed
 
-    public void mostrarHistorial(){
+    private void RecetearTablaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecetearTablaActionPerformed
+        // TODO add your handling code here:
+        registros.clear();
         DefaultTableModel modeloListado = (DefaultTableModel) HistorialTable.getModel();
-        modeloListado.setRowCount(3);
+        modeloListado.setRowCount(registros.size());
+    }//GEN-LAST:event_RecetearTablaActionPerformed
+
+    public void guardarInformacion(){
+       
+        //Registros ger=new Registros(veiR,disR,totalR,creaR,entregaR, finalProR);
+        registros.add(new Registros(veiR,disR,totalR,creaR,entregaR, finalProR));
         
-        modeloListado.setValueAt(vehiculo, 0, 0);
-        modeloListado.setValueAt(velocidad1, 0, 1);
-        modeloListado.setValueAt(total, 0, 2);
-        modeloListado.setValueAt(fecha1, 0, 3);
-        modeloListado.setValueAt(fechaFinal1, 0, 4);
-        
-       /* for (int i = 0; i < contadorPro; i++) {
-        modeloListado.setValueAt(productos[i].precio, i, 0);
-        modeloListado.setValueAt(productos[i].productos, i, 1);
-        
-        }*/
     }
+    
+    public void mostrarHistorial(){
+       
+        DefaultTableModel modeloListado = (DefaultTableModel) HistorialTable.getModel();
+        modeloListado.setRowCount(registros.size());
+        
+        for(int i=0;i<registros.size();i++){
+        modeloListado.setValueAt(registros.get(i).getVehiculo(), i, 0);
+        modeloListado.setValueAt(registros.get(i).getDistancia(), i, 1);
+        modeloListado.setValueAt(registros.get(i).getMonto(), i, 2);
+        modeloListado.setValueAt(registros.get(i).getCreacion(), i, 3);
+        modeloListado.setValueAt(registros.get(i).getEntrega(), i, 4);
+        modeloListado.setValueAt(registros.get(i).getProductos(), i, 5);
+        //System.out.println("Estos son los productos: "+registros.get(i).getProductos());
+        }
+    }    
     
     /**
      * @param args the command line arguments
@@ -183,6 +215,7 @@ public class Historial extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -193,6 +226,7 @@ public class Historial extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable HistorialTable;
+    private javax.swing.JButton RecetearTabla;
     private javax.swing.JButton Regresar4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
