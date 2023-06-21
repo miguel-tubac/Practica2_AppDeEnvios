@@ -429,7 +429,7 @@ public class Pedidos extends javax.swing.JFrame {
                 ArrayList<Registros> recupe=new ArrayList<Registros>();
 
                 // mostrar registros cargados
-                ObjectInputStream recuperar_fichero=new ObjectInputStream(new FileInputStream("./dist/Respaldo.txt"));
+                ObjectInputStream recuperar_fichero=new ObjectInputStream(new FileInputStream("./Guardar/Respaldo.txt"));
                 recupe = (ArrayList) recuperar_fichero.readObject();
                 recuperar_fichero.close();
 
@@ -446,12 +446,12 @@ public class Pedidos extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         try {
-            FileOutputStream archivo = new FileOutputStream("./dist/Respaldo.txt");
+            FileOutputStream archivo = new FileOutputStream("./Guardar/Respaldo.txt");
             ObjectOutputStream salida = new ObjectOutputStream(archivo);
             salida.writeObject(registros);
             salida.close();
             archivo.close();
-            JOptionPane.showMessageDialog(rootPane,"Se ha respaldo su programa en: /dist/Respaldo.txt");
+            JOptionPane.showMessageDialog(rootPane,"Se ha respaldo su programa en: /Guardar/Respaldo.txt");
            
         } catch (Exception e) {
             System.out.println(e.getMessage());
